@@ -10,6 +10,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,9 +25,9 @@ public class UserApiAsyncClientTest {
 
     UserApiAsyncClient client;
 
-    public UserApiAsyncClientTest() {
+    public UserApiAsyncClientTest() throws MalformedURLException {
         config = new ConfigLoader<>(TestConfig.class, "p.yml").getTestConfig();
-        client = new UserApiAsyncClient(config.getApiKey());
+        client = new UserApiAsyncClient(new URL(config.getApiBaseUrl()), config.getApiKey());
     }
 
     @Test

@@ -10,19 +10,22 @@ import com.ft.membership.common.types.email.Email;
 import com.ft.membership.userapi.domain.UserProfileCollection;
 import com.ning.http.client.AsyncHttpClient;
 
+import java.net.URL;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class UserApiAsyncClient {
 
-    private static final String USER_API_SEARCH_USER_BY_EMAIL_ENDPOINT = "https://beta-api.ft.com/users?email=%s";
     private static final String API_KEY_HEADER_NAME = "X-Api-Key";
     private static final String TRANSACTION_ID_HEADER_NAME = "X-Request-Id";
+
+    private final String USER_API_SEARCH_USER_BY_EMAIL_ENDPOINT;
     private final String API_KEY;
 
-    public UserApiAsyncClient(String apiKey) {
+    public UserApiAsyncClient(URL apiBaseUrl, String apiKey) {
         API_KEY = apiKey;
+        USER_API_SEARCH_USER_BY_EMAIL_ENDPOINT = apiBaseUrl+"/users?email=%s";
     }
 
     public CompletableFuture<UserProfileCollection> getUserProfileByEmail(

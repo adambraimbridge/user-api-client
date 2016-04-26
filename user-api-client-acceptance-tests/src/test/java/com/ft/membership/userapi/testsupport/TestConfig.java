@@ -2,9 +2,18 @@ package com.ft.membership.userapi.testsupport;
 
 public class TestConfig {
 
+    private String apiBaseUrl;
     private String apiKey;
     private String testRegisteredUser1Email;
     private String testRegisteredUser1UserId;
+
+    public String getApiBaseUrl() {
+        return apiBaseUrl;
+    }
+
+    public void setApiBaseUrl(final String apiBaseUrl) {
+        this.apiBaseUrl = apiBaseUrl;
+    }
 
     public String getApiKey() {
         return apiKey;
