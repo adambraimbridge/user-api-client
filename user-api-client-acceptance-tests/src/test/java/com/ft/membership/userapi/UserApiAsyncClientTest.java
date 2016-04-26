@@ -26,7 +26,7 @@ public class UserApiAsyncClientTest {
     UserApiAsyncClient client;
 
     public UserApiAsyncClientTest() throws MalformedURLException {
-        String appEnv = System.getenv("APP.ENV");
+        String appEnv = System.getProperty("APP.ENV");
         String fileName = "p.yml";
         if (appEnv != null) {
             fileName = appEnv.concat(".yml");
