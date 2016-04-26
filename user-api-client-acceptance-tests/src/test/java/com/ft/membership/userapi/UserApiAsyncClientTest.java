@@ -43,7 +43,7 @@ public class UserApiAsyncClientTest {
         try {
              items = client
                      .getUserProfileByEmail(new Email(config.getTestRegisteredUser1Email()), Optional.empty())
-                    .get();
+                     .get();
         } catch(Exception e) {
             if(e.getCause().getClass().equals(ErrorResponseException.class)) {
                 ErrorResponseException errorResponseException = (ErrorResponseException) e.getCause();
