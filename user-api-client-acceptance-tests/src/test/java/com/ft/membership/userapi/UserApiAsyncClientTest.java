@@ -26,7 +26,12 @@ public class UserApiAsyncClientTest {
     UserApiAsyncClient client;
 
     public UserApiAsyncClientTest() throws MalformedURLException {
-        config = new ConfigLoader<>(TestConfig.class, "p.yml").getTestConfig();
+        String appEnv = System.getenv("APP.ENV");
+        String fileName = "p.yml";
+        if (appEnv != null) {
+            fileName = appEnv.concat(".yml");
+        }
+        config = new ConfigLoader<>(TestConfig.class, fileName).getTestConfig();
         client = new UserApiAsyncClient(new URL(config.getApiBaseUrl()), config.getApiKey());
     }
 
