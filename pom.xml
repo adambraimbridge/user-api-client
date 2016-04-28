@@ -56,13 +56,11 @@
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>${junit.version}</version>
-                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>me.atam</groupId>
                 <artifactId>atam4j</artifactId>
                 <version>${atam4j.version}</version>
-                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
