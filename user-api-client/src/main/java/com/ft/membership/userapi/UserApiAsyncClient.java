@@ -9,6 +9,7 @@ import com.ft.aim.client.Method;
 import com.ft.membership.common.types.email.Email;
 import com.ft.membership.userapi.domain.UserProfileCollection;
 import com.ning.http.client.AsyncHttpClient;
+import com.ning.http.client.AsyncHttpClientConfig;
 
 import java.net.URL;
 import java.util.Optional;
@@ -20,19 +21,27 @@ public class UserApiAsyncClient {
     private static final String API_KEY_HEADER_NAME = "X-Api-Key";
     private static final String TRANSACTION_ID_HEADER_NAME = "X-Request-Id";
 
-    private final String USER_API_SEARCH_USER_BY_EMAIL_ENDPOINT;
-    private final String API_KEY;
+    private static AsyncHttpClient asyncHttpClient;
+    private static String USER_API_SEARCH_USER_BY_EMAIL_ENDPOINT;
+    private static String API_KEY;
 
     public UserApiAsyncClient(URL apiBaseUrl, String apiKey) {
+
         API_KEY = apiKey;
         USER_API_SEARCH_USER_BY_EMAIL_ENDPOINT = apiBaseUrl+"/users?email=%s";
+        initAsyncHttpClient(Optional.empty());
+    }
+
+    public UserApiAsyncClient(URL apiBaseUrl, String apiKey, Optional<AsyncHttpClientConfig> httpClientConfig) {
+
+        new UserApiAsyncClient(apiBaseUrl, apiKey);
+        initAsyncHttpClient(httpClientConfig);
     }
 
     public CompletableFuture<UserProfileCollection> getUserProfileByEmail(
             Email emailAddress,
             Optional<String> transactionId) {
 
-        final AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
         Client client = new Client(asyncHttpClient);
 
         return client.request(
@@ -45,5 +54,25 @@ public class UserApiAsyncClient {
                         .build(),
                 JacksonJsonResponseMapper.asObject(new TypeReference<UserProfileCollection>() {})
         );
+    }
+
+    public void close() {
+
+        if (asyncHttpClient != null && !asyncHttpClient.isClosed()) {
+            asyncHttpClient.close();
+            asyncHttpClient = null;
+        }
+    }
+
+    private synchronized void initAsyncHttpClient(Optional<AsyncHttpClientConfig> httpClientConfig) {
+
+        if (asyncHttpClient != null)
+            return;
+
+        if (httpClientConfig.isPresent()) {
+            asyncHttpClient = new AsyncHttpClient(httpClientConfig.get());
+        } else {
+            asyncHttpClient = new AsyncHttpClient();
+        }
     }
 }
