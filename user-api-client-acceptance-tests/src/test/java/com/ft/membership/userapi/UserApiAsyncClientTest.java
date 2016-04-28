@@ -6,6 +6,7 @@ import com.ft.membership.userapi.domain.UserProfile;
 import com.ft.membership.userapi.domain.UserProfileCollection;
 import com.ft.membership.userapi.testsupport.TestConfig;
 import me.atam.atam4j.configuration.ConfigLoader;
+import org.junit.AfterClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,8 +23,7 @@ public class UserApiAsyncClientTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserApiAsyncClientTest.class);
     private static TestConfig config;
-
-    UserApiAsyncClient client;
+    private static UserApiAsyncClient client;
 
     public UserApiAsyncClientTest() throws MalformedURLException {
         String appEnv = System.getProperty("APP.ENV");
@@ -73,5 +73,11 @@ public class UserApiAsyncClientTest {
                 .getUserProfiles();
 
         assertEquals("Number of user profiles returned should be 0", 0, userProfiles.size());
+    }
+
+    @AfterClass
+    public static void tearDown() throws Exception {
+
+        client.close();
     }
 }
