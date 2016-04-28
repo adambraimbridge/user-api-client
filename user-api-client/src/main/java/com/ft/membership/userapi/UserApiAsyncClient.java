@@ -15,12 +15,16 @@ import java.net.URL;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class UserApiAsyncClient {
 
     private static final String API_KEY_HEADER_NAME = "X-Api-Key";
     private static final String TRANSACTION_ID_HEADER_NAME = "X-Request-Id";
+    private static final Lock lock = new ReentrantLock();
 
+    private static Client client;
     private static AsyncHttpClient asyncHttpClient;
     private static String USER_API_SEARCH_USER_BY_EMAIL_ENDPOINT;
     private static String API_KEY;
@@ -42,8 +46,6 @@ public class UserApiAsyncClient {
             Email emailAddress,
             Optional<String> transactionId) {
 
-        Client client = new Client(asyncHttpClient);
-
         return client.request(
                 Method.GET,
                 String.format(USER_API_SEARCH_USER_BY_EMAIL_ENDPOINT, emailAddress),
@@ -64,15 +66,18 @@ public class UserApiAsyncClient {
         }
     }
 
-    private synchronized void initAsyncHttpClient(Optional<AsyncHttpClientConfig> httpClientConfig) {
+    private void initAsyncHttpClient(Optional<AsyncHttpClientConfig> httpClientConfig) {
 
-        if (asyncHttpClient != null)
-            return;
-
-        if (httpClientConfig.isPresent()) {
-            asyncHttpClient = new AsyncHttpClient(httpClientConfig.get());
-        } else {
-            asyncHttpClient = new AsyncHttpClient();
+        lock.lock();
+        try {
+            if (httpClientConfig.isPresent()) {
+                asyncHttpClient = new AsyncHttpClient(httpClientConfig.get());
+            } else {
+                asyncHttpClient = new AsyncHttpClient();
+            }
+            client = new Client(asyncHttpClient);
+        } finally {
+            lock.unlock();
         }
     }
 }
