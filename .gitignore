@@ -1,0 +1,10 @@
+# IDE stuff
+*.iml
+.idea/
+
+# MVN stuff
+target/
+
+# Binaries
+*.class
+*.jar

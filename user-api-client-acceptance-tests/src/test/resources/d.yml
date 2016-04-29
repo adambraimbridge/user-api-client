@@ -1,0 +1,4 @@
+apiBaseUrl: http://localhost
+apiKey: ${USER_API_CLIENT_KEY:-test-api-key}
+testRegisteredUser1Email: user-api-acceptance-test-registered-user1@ftqa.org
+testRegisteredUser1UserId: 801c1673-1bf1-4b54-9529-c483e3e0b433
