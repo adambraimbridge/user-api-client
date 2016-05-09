@@ -1,4 +1,4 @@
 apiBaseUrl: https://beta-api-t.ft.com
 apiKey: ${USER_API_CLIENT_KEY:-test-api-key}
 testRegisteredUser1Email: user-api-acceptance-test-registered-user1@ftqa.org
-testRegisteredUser1UserId: 801c1673-1bf1-4b54-9529-c483e3e0b433
+testRegisteredUser1UserId: bf03b10d-970f-4c23-ba2c-bcd39e264a78
