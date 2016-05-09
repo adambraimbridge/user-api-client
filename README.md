@@ -14,15 +14,22 @@ For an example of how to use the client lib, please refer to
 
     mvn clean install -DAPP.ENV=<env var>
     
-    Example:
-    For running tests against Prod version of user api
+Example:
+For running tests against Prod version of user api
+
     mvn clean install -DAPP.ENV=p
      
-    For running tests against Test version of user api
+For running tests against Test version of user api
+
     mvn clean install -DAPP.ENV=t
     
+### Releasing the client library
+
+Changes pushed to master branch are automatically built and pushed to FT's nexus server by the [user-api-client-lib build job](http://aim-build.in.ft.com/job/user-api-client).
+
+Releasing the client lib versions to maven central, so that it is publicly available will be done in due course.
 
 # TODOs
 
 * Make all dependencies publicly available
-* Create automated build and release job for the client lib 
+* Release to maven central.
