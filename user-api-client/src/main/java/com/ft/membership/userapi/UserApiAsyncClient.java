@@ -8,10 +8,14 @@ import com.ft.aim.client.JacksonJsonResponseMapper;
 import com.ft.aim.client.Method;
 import com.ft.membership.common.types.email.Email;
 import com.ft.membership.userapi.domain.UserProfileCollection;
-import com.ning.http.client.AsyncHttpClient;
-import com.ning.http.client.AsyncHttpClientConfig;
+import org.asynchttpclient.AsyncHttpClient;
+import org.asynchttpclient.AsyncHttpClientConfig;
+import org.asynchttpclient.DefaultAsyncHttpClient;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -46,22 +50,30 @@ public class UserApiAsyncClient {
             Email emailAddress,
             Optional<String> transactionId) {
 
-        return client.request(
-                Method.GET,
-                String.format(USER_API_SEARCH_USER_BY_EMAIL_ENDPOINT, emailAddress),
-                Entities.noBody(),
-                HeaderBuilder.headers()
-                        .with(API_KEY_HEADER_NAME, API_KEY)
-                        .with(TRANSACTION_ID_HEADER_NAME, transactionId.orElse(UUID.randomUUID().toString()))
-                        .build(),
-                JacksonJsonResponseMapper.asObject(new TypeReference<UserProfileCollection>() {})
-        );
+        try {
+            return client.request(
+                    Method.GET,
+                    String.format(USER_API_SEARCH_USER_BY_EMAIL_ENDPOINT, URLEncoder.encode(emailAddress.toString(), "UTF-8")),
+                    Entities.noBody(),
+                    HeaderBuilder.headers()
+                            .with(API_KEY_HEADER_NAME, API_KEY)
+                            .with(TRANSACTION_ID_HEADER_NAME, transactionId.orElse(UUID.randomUUID().toString()))
+                            .build(),
+                    JacksonJsonResponseMapper.asObject(new TypeReference<UserProfileCollection>() {})
+            );
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void close() {
 
         if (asyncHttpClient != null && !asyncHttpClient.isClosed()) {
-            asyncHttpClient.close();
+            try {
+                asyncHttpClient.close();
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to close client", e);
+            }
             asyncHttpClient = null;
         }
     }
@@ -71,9 +83,9 @@ public class UserApiAsyncClient {
         lock.lock();
         try {
             if (httpClientConfig.isPresent()) {
-                asyncHttpClient = new AsyncHttpClient(httpClientConfig.get());
+                asyncHttpClient = new DefaultAsyncHttpClient(httpClientConfig.get());
             } else {
-                asyncHttpClient = new AsyncHttpClient();
+                asyncHttpClient = new DefaultAsyncHttpClient();
             }
             client = new Client(asyncHttpClient);
         } finally {
